@@ -95,33 +95,8 @@
             });
         }
 
-        // 게임 리셋 함수
         function resetGame() {
-            // 시도 횟수 초기화
-            시도횟수 = 0;
-            
-            // 랜덤한 새 답 설정
-            답 = 단어목록[Math.floor(Math.random() * 단어목록.length)];
-            console.log(답); // 새로 설정된 답을 콘솔에 출력
-            
-            // 게임 화면 초기화
-            var gameSection = document.getElementById('gameSection');
-            gameSection.innerHTML = `
-                <br>
-                <input class="input" maxlength="1">
-                <input class="input" maxlength="1">
-                <input class="input" maxlength="1">
-                <input class="input" maxlength="1">
-                <input class="input" maxlength="1">
-                <input class="input" maxlength="1">
-            `;
-            
-            // "다시 시작" 버튼 제거
-            var resetButton = document.querySelector('button');
-            if (resetButton) resetButton.remove();
-
-            // 새로 생성된 입력 필터 적용
-            setInputFilter();
+            location.reload();  // 페이지 새로고침
         }
 
         // 엔터 키로 제출하기
