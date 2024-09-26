@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>😘Wordle(고성모, 서상호)</title>
+    <style>
+        input {
+            width: 40px;
+            height: 60px;
+            font-size: 35px;
+            text-align: center;
+        }
+        body {
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <head>
+        <h1>Wordle</h1>
+        <hr>
+    </head>
+    <section id="gameSection">
+        <br>
+        <input class="input" maxlength="1">
+        <input class="input" maxlength="1">
+        <input class="input" maxlength="1">
+        <input class="input" maxlength="1">
+        <input class="input" maxlength="1">
+        <input class="input" maxlength="1">
+    </section>
+    <script>
+        // 미리 정의된 단어 목록
+        var 단어목록 = ['sensor', 'laptop', 'animal', 'window', 'person', 'school', 'friend', 'family', 'number', 'garden'];  
+        
+        // 랜덤으로 답 설정
+        var 답 = 단어목록[Math.floor(Math.random() * 단어목록.length)];
+        console.log(답); // 테스트를 위해 콘솔에 답 출력 (필요시 삭제)
+
+        var 시도횟수 = 0;   // 시도 횟수를 기록하는 변수
+
+        function 제출하기() {
+            시도횟수++;  // 제출할 때마다 시도 횟수 증가
+            var input = document.querySelectorAll('.input');
+            var 맞춘갯수 = 0;  // 몇 개의 글자를 맞췄는지 기록하는 변수
+
+            // 입력한 글자를 검사
+            for (let i = 0; i < 6; i++) {
+                if (input[i].value === 답[i]) {
+                    input[i].style.background = 'green';
+                    맞춘갯수++;
+                } else if (답.includes(input[i].value)) {
+                    input[i].style.background = 'yellow';
+                } else {
+                    input[i].style.background = 'lightgrey';
+                }
+                input[i].classList.remove('input');
+            }
+
+            // 모든 글자를 맞춘 경우 (6개의 글자가 모두 초록색인 경우)
+            if (맞춘갯수 === 6) {
+                alert(`성공! ${시도횟수}번 만에 맞췄습니다.`);
+                // 다시 시작 버튼 생성
+                var resetButton = document.createElement('button');
+                resetButton.textContent = '다시 시작';
+                resetButton.onclick = resetGame;  // 버튼 클릭 시 resetGame 함수 호출
+                document.body.appendChild(resetButton);
+                return;  // 성공하면 추가 입력을 받지 않고 종료
+            }
+
+            // 새로운 입력 칸 생성 (6개)
+            var template = `
+                <div>
+                    <input class="input" maxlength="1">
+                    <input class="input" maxlength="1">
+                    <input class="input" maxlength="1">
+                    <input class="input" maxlength="1">
+                    <input class="input" maxlength="1">
+                    <input class="input" maxlength="1">
+                </div>`;
+            document.querySelector('body').insertAdjacentHTML('beforeend', template);
+
+            // 새로 생성된 입력칸에도 알파벳 필터 적용
+            setInputFilter();
+        }
+
+        // 알파벳만 입력 가능하도록 필터링
+        function setInputFilter() {
+            var inputs = document.querySelectorAll('.input');
+            inputs.forEach(function(input) {
+                input.addEventListener('input', function() {
+                    this.value = this.value.replace(/[^a-zA-Z]/g, '').toLowerCase();
+                });
+            });
+        }
+
+        // 게임 리셋 함수
+        function resetGame() {
+            // 시도 횟수 초기화
+            시도횟수 = 0;
+            
+            // 랜덤한 새 답 설정
+            답 = 단어목록[Math.floor(Math.random() * 단어목록.length)];
+            console.log(답); // 새로 설정된 답을 콘솔에 출력
+            
+            // 게임 화면 초기화
+            var gameSection = document.getElementById('gameSection');
+            gameSection.innerHTML = `
+                <br>
+                <input class="input" maxlength="1">
+                <input class="input" maxlength="1">
+                <input class="input" maxlength="1">
+                <input class="input" maxlength="1">
+                <input class="input" maxlength="1">
+                <input class="input" maxlength="1">
+            `;
+            
+            // "다시 시작" 버튼 제거
+            var resetButton = document.querySelector('button');
+            if (resetButton) resetButton.remove();
+
+            // 새로 생성된 입력 필터 적용
+            setInputFilter();
+        }
+
+        // 엔터 키로 제출하기
+        document.addEventListener('keydown', function(event) {
+            if (event.key === 'Enter') {
+                제출하기();
+            }
+        });
+
+        // 초기 입력 필터 설정
+        setInputFilter();
+    </script>
+</body>
+</html>
