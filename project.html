@@ -83,6 +83,7 @@
 
             // 새로 생성된 입력칸에도 알파벳 필터 적용
             setInputFilter();
+            setAutoTab();
         }
 
         // 알파벳만 입력 가능하도록 필터링
@@ -91,6 +92,18 @@
             inputs.forEach(function(input) {
                 input.addEventListener('input', function() {
                     this.value = this.value.replace(/[^a-zA-Z]/g, '').toLowerCase();
+                });
+            });
+        }
+
+        // 입력이 완료되면 자동으로 다음 입력칸으로 포커스 이동
+        function setAutoTab() {
+            var inputs = document.querySelectorAll('.input');
+            inputs.forEach(function(input, index) {
+                input.addEventListener('input', function() {
+                    if (this.value.length === 1 && index < inputs.length - 1) {
+                        inputs[index + 1].focus();
+                    }
                 });
             });
         }
@@ -106,8 +119,9 @@
             }
         });
 
-        // 초기 입력 필터 설정
+        // 초기 입력 필터 및 자동탭 설정
         setInputFilter();
+        setAutoTab();
     </script>
 </body>
 </html>
