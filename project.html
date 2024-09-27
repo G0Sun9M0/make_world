@@ -3,13 +3,16 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>😘Wordle(고성모(2405001), 서상호(2405011))</title>
+    <title>😘Wordle(고성모, 서상호)</title>
     <style>
         input {
-            width: 40px;
-            height: 60px;
+            width: 50px;
+            height: 50px;
+            border: 1 solid #e5e7eb;
             font-size: 35px;
+            border-radius: .375rem;
             text-align: center;
+            margin: 0.3px; 
         }
         body {
             text-align: center;
@@ -48,12 +51,13 @@
             // 입력한 글자를 검사
             for (let i = 0; i < 6; i++) {
                 if (input[i].value === 답[i]) {
-                    input[i].style.background = 'green';
+                    input[i].style.background = '#22c55e';
                     맞춘갯수++;
                 } else if (답.includes(input[i].value)) {
-                    input[i].style.background = 'yellow';
+                    input[i].style.background = '#eab308';
                 } else {
-                    input[i].style.background = 'lightgrey';
+                    input[i].style.background = '#6b7280';
+                    input[i].style.color= '#ffffff';
                 }
                 input[i].classList.remove('input');
             }
@@ -70,8 +74,9 @@
             }
 
             // 새로운 입력 칸 생성 (6개)
+             
             var template = `
-                <div>
+               <div style="margin-top: 5px;">  <!-- 위와 여백을 생성 -->
                     <input class="input" maxlength="1">
                     <input class="input" maxlength="1">
                     <input class="input" maxlength="1">
