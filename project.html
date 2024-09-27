@@ -83,6 +83,7 @@
 
             // 새로 생성된 입력칸에도 알파벳 필터 적용
             setInputFilter();
+            setAutoTab();
         }
 
         // 알파벳만 입력 가능하도록 필터링
@@ -95,6 +96,18 @@
             });
         }
 
+        // 입력이 완료되면 자동으로 다음 입력칸으로 포커스 이동
+        function setAutoTab() {
+            var inputs = document.querySelectorAll('.input');
+            inputs.forEach(function(input, index) {
+                input.addEventListener('input', function() {
+                    if (this.value.length === 1 && index < inputs.length - 1) {
+                        inputs[index + 1].focus();
+                    }
+                });
+            });
+        }
+
         function resetGame() {
             location.reload();  // 페이지 새로고침
         }
@@ -102,12 +115,20 @@
         // 엔터 키로 제출하기
         document.addEventListener('keydown', function(event) {
             if (event.key === 'Enter') {
+                event.preventDefault(); // 엔터 키 기본 동작 차단
                 제출하기();
+
+                // 첫 번째 입력 칸에 포커스를 맞춤
+                var inputs = document.querySelectorAll('.input');
+                if (inputs.length > 0) {
+                    inputs[0].focus();  // 새로 생성된 줄의 첫 번째 칸에 포커스
+                }
             }
         });
 
-        // 초기 입력 필터 설정
+        // 초기 입력 필터 및 자동탭 설정
         setInputFilter();
+        setAutoTab();
     </script>
 </body>
 </html>
