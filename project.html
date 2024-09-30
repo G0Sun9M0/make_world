@@ -19,9 +19,10 @@
         }
     </style>
 </head>
+
 <body>
     <head>
-        <h1>Wordle</h1>
+        <h1>😘Wordle</h1>
         <hr>
     </head>
     <section id="gameSection">
@@ -64,7 +65,7 @@
 
             // 모든 글자를 맞춘 경우 (6개의 글자가 모두 초록색인 경우)
             if (맞춘갯수 === 6) {
-                alert(성공! ${시도횟수}번 만에 맞췄습니다.);
+                alert(`성공! ${시도횟수}번 만에 맞췄습니다.`);
                 // 다시 시작 버튼 생성
                 var resetButton = document.createElement('button');
                 resetButton.textContent = '다시 시작';
@@ -75,7 +76,7 @@
 
             // 새로운 입력 칸 생성 (6개)
             
-            var template = 
+            var template = `
             <div style="margin-top: 5px;">  <!-- 위와 여백을 생성 -->
                     <input class="input" maxlength="1">
                     <input class="input" maxlength="1">
@@ -83,7 +84,7 @@
                     <input class="input" maxlength="1">
                     <input class="input" maxlength="1">
                     <input class="input" maxlength="1">
-                </div>;
+                </div>`;
             document.querySelector('body').insertAdjacentHTML('beforeend', template);
 
             // 새로 생성된 입력칸에도 알파벳 필터 적용
@@ -108,6 +109,13 @@
                 input.addEventListener('input', function() {
                     if (this.value.length === 1 && index < inputs.length - 1) {
                         inputs[index + 1].focus();
+                    }
+                });
+
+                // Backspace로 이전 칸으로 포커스 이동
+                input.addEventListener('keydown', function(event) {
+                    if (event.key === 'Backspace' && input.value === '' && index > 0) {
+                        inputs[index - 1].focus();  // 이전 칸으로 포커스 이동
                     }
                 });
             });
