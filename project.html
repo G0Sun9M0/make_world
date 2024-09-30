@@ -17,6 +17,14 @@
         body {
             text-align: center;
         }
+        nav {
+            text-align: left;
+            margin-top: 1px;
+        }
+        #timer, #attempts {
+            font-size: 18px;
+            margin-top: 10px;
+        }
     </style>
 </head>
 
@@ -34,6 +42,10 @@
         <input class="input" maxlength="1">
         <input class="input" maxlength="1">
     </section>
+    <nav>
+        <div id="timer">타이머: <span id="time">00:00</span></div>
+        <div id="attempts">시도 횟수: <span id="attemptCount">0</span></div>
+    </nav>
     <script>
         // 미리 정의된 단어 목록
         var 단어목록 = ['sensor', 'laptop', 'animal', 'window', 'person', 'school', 'friend', 'family', 'number', 'garden'];  
@@ -44,8 +56,21 @@
 
         var 시도횟수 = 0;   // 시도 횟수를 기록하는 변수
 
+        // 타이머 설정
+        var 시작시간 = new Date();
+        function updateTimer() {
+            var 현재시간 = new Date();
+            var 경과시간 = Math.floor((현재시간 - 시작시간) / 1000);
+            var 분 = String(Math.floor(경과시간 / 60)).padStart(2, '0');
+            var 초 = String(경과시간 % 60).padStart(2, '0');
+            document.getElementById('time').textContent = `${분}:${초}`;
+        }
+        setInterval(updateTimer, 1000);  // 1초마다 타이머 업데이트
+
         function 제출하기() {
             시도횟수++;  // 제출할 때마다 시도 횟수 증가
+            document.getElementById('attemptCount').textContent = 시도횟수; // 시도 횟수 업데이트
+
             var input = document.querySelectorAll('.input');
             var 맞춘갯수 = 0;  // 몇 개의 글자를 맞췄는지 기록하는 변수
 
