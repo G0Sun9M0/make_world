@@ -29,10 +29,16 @@
 </head>
 
 <body>
-    <head>
         <h1>😘Wordle</h1>
         <hr>
-    </head>
+  <div class="game-container">
+      <div class="sidebar">
+          <div id="timer">타이머: <span id="time">00:00</span></div>
+          <div id="attempts">시도 횟수: <span id="attemptCount">0</span></div>
+      </div>
+      <table class="wordle-table">
+          </table>
+  </div>
     <section id="gameSection">
         <br>
         <input class="input" maxlength="1">
@@ -42,10 +48,6 @@
         <input class="input" maxlength="1">
         <input class="input" maxlength="1">
     </section>
-    <nav>
-        <div id="timer">타이머: <span id="time">00:00</span></div>
-        <div id="attempts">시도 횟수: <span id="attemptCount">0</span></div>
-    </nav>
     <script>
         // 미리 정의된 단어 목록
         var 단어목록 = ['sensor', 'laptop', 'animal', 'window', 'person', 'school', 'friend', 'family', 'number', 'garden'];  
