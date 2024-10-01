@@ -18,10 +18,10 @@
             text-align: center;
         }
         nav {
-            text-align: left;
             margin-top: 1px;
+            font-size: 18px;
         }
-        #timer, #attempts {
+        #timer, #attempts, #stage, #timeLimit {
             font-size: 18px;
             margin-top: 10px;
         }
@@ -29,16 +29,15 @@
 </head>
 
 <body>
-        <h1>😘Wordle</h1>
-        <hr>
-  <div class="game-container">
-      <div class="sidebar">
-          <div id="timer">타이머: <span id="time">00:00</span></div>
-          <div id="attempts">시도 횟수: <span id="attemptCount">0</span></div>
-      </div>
-      <table class="wordle-table">
-          </table>
-  </div>
+    <h1>😘Wordle</h1>
+    <hr>
+    <nav>
+        <div>현재 단계: <span id="currentStage">1</span> / 6</div>
+        <div id="timer">플레이 시간: <span id="time">00:00</span></div>
+        <div id="timeLimit">남은 시간: <span id="remainingTime">60</span>초</div>
+        <div id="attempts">시도 횟수: <span id="attemptCount">0</span></div>
+    </nav>
+
     <section id="gameSection">
         <br>
         <input class="input" maxlength="1">
@@ -48,18 +47,19 @@
         <input class="input" maxlength="1">
         <input class="input" maxlength="1">
     </section>
+
     <script>
-        // 미리 정의된 단어 목록
         var 단어목록 = ['sensor', 'laptop', 'animal', 'window', 'person', 'school', 'friend', 'family', 'number', 'garden'];  
-        
-        // 랜덤으로 답 설정
+        var 단계 = 1;
+        var 최대단계 = 6;
         var 답 = 단어목록[Math.floor(Math.random() * 단어목록.length)];
-        console.log(답); // 테스트를 위해 콘솔에 답 출력 (필요시 삭제)
+        console.log(답);
 
-        var 시도횟수 = 0;   // 시도 횟수를 기록하는 변수
+        var 시도횟수 = 0;
+        var 타이머작동중 = false;
+        var 시작시간, 제한시간 = 60;  // 1단계에서 60초 제한
+        var 제한시간타이머;
 
-        // 타이머 설정
-        var 시작시간 = new Date();
         function updateTimer() {
             var 현재시간 = new Date();
             var 경과시간 = Math.floor((현재시간 - 시작시간) / 1000);
@@ -67,16 +67,30 @@
             var 초 = String(경과시간 % 60).padStart(2, '0');
             document.getElementById('time').textContent = `${분}:${초}`;
         }
-        setInterval(updateTimer, 1000);  // 1초마다 타이머 업데이트
+
+        function startTimeLimitTimer() {
+            var 남은시간 = 제한시간;
+            document.getElementById('remainingTime').textContent = 남은시간;
+            
+            제한시간타이머 = setInterval(function() {
+                남은시간--;
+                document.getElementById('remainingTime').textContent = 남은시간;
+
+                if (남은시간 <= 0) {
+                    clearInterval(제한시간타이머);
+                    alert("시간 초과! 게임이 종료됩니다.");
+                    resetGame();
+                }
+            }, 1000);
+        }
 
         function 제출하기() {
-            시도횟수++;  // 제출할 때마다 시도 횟수 증가
-            document.getElementById('attemptCount').textContent = 시도횟수; // 시도 횟수 업데이트
+            시도횟수++;
+            document.getElementById('attemptCount').textContent = 시도횟수;
 
             var input = document.querySelectorAll('.input');
-            var 맞춘갯수 = 0;  // 몇 개의 글자를 맞췄는지 기록하는 변수
+            var 맞춘갯수 = 0;
 
-            // 입력한 글자를 검사
             for (let i = 0; i < 6; i++) {
                 if (input[i].value === 답[i]) {
                     input[i].style.background = '#22c55e';
@@ -85,41 +99,39 @@
                     input[i].style.background = '#eab308';
                 } else {
                     input[i].style.background = '#6b7280';
-                    input[i].style.color= '#ffffff';
+                    input[i].style.color = '#ffffff';
                 }
                 input[i].classList.remove('input');
             }
 
-            // 모든 글자를 맞춘 경우 (6개의 글자가 모두 초록색인 경우)
             if (맞춘갯수 === 6) {
                 alert(`성공! ${시도횟수}번 만에 맞췄습니다.`);
-                // 다시 시작 버튼 생성
-                var resetButton = document.createElement('button');
-                resetButton.textContent = '다시 시작';
-                resetButton.onclick = resetGame;  // 버튼 클릭 시 resetGame 함수 호출
-                document.body.appendChild(resetButton);
-                return;  // 성공하면 추가 입력을 받지 않고 종료
+
+                if (단계 < 최대단계) {
+                    단계++;
+                    제한시간 -= 10;  // 다음 단계로 넘어갈 때마다 10초씩 감소
+                    document.getElementById('currentStage').textContent = 단계;
+                    다음단계();
+                } else {
+                    완료();
+                }
+                return;
             }
 
-            // 새로운 입력 칸 생성 (6개)
-            
             var template = `
-            <div style="margin-top: 5px;">  <!-- 위와 여백을 생성 -->
-                    <input class="input" maxlength="1">
-                    <input class="input" maxlength="1">
-                    <input class="input" maxlength="1">
-                    <input class="input" maxlength="1">
-                    <input class="input" maxlength="1">
-                    <input class="input" maxlength="1">
-                </div>`;
-            document.querySelector('body').insertAdjacentHTML('beforeend', template);
-
-            // 새로 생성된 입력칸에도 알파벳 필터 적용
+            <div style="margin-top: 5px;">
+                <input class="input" maxlength="1">
+                <input class="input" maxlength="1">
+                <input class="input" maxlength="1">
+                <input class="input" maxlength="1">
+                <input class="input" maxlength="1">
+                <input class="input" maxlength="1">
+            </div>`;
+            document.querySelector('#gameSection').insertAdjacentHTML('beforeend', template);
             setInputFilter();
             setAutoTab();
         }
 
-        // 알파벳만 입력 가능하도록 필터링
         function setInputFilter() {
             var inputs = document.querySelectorAll('.input');
             inputs.forEach(function(input) {
@@ -129,44 +141,85 @@
             });
         }
 
-        // 입력이 완료되면 자동으로 다음 입력칸으로 포커스 이동
         function setAutoTab() {
             var inputs = document.querySelectorAll('.input');
             inputs.forEach(function(input, index) {
                 input.addEventListener('input', function() {
+                    if (!타이머작동중 && this.value !== '') {
+                        시작타이머();  // 첫 입력 시 스톱워치 시작
+                        startTimeLimitTimer();  // 제한 시간 타이머 시작
+                    }
                     if (this.value.length === 1 && index < inputs.length - 1) {
                         inputs[index + 1].focus();
                     }
                 });
-
-                // Backspace로 이전 칸으로 포커스 이동
                 input.addEventListener('keydown', function(event) {
                     if (event.key === 'Backspace' && input.value === '' && index > 0) {
-                        inputs[index - 1].focus();  // 이전 칸으로 포커스 이동
+                        inputs[index - 1].focus();
                     }
                 });
             });
         }
 
-        function resetGame() {
-            location.reload();  // 페이지 새로고침
+        function 시작타이머() {
+            if (!타이머작동중) {
+                시작시간 = new Date();
+                타이머작동중 = true;
+                setInterval(updateTimer, 1000);  // 스톱워치 작동
+            }
         }
 
-        // 엔터 키로 제출하기
+        function resetGame() {
+            location.reload();
+        }
+
+        function 다음단계() {
+            clearInterval(제한시간타이머);  // 이전 단계의 제한 시간 타이머 종료
+
+            // 새로운 단어로 설정
+            답 = 단어목록[Math.floor(Math.random() * 단어목록.length)];
+            console.log(`새로운 단어: ${답}`);
+            
+            시도횟수 = 0;  // 시도 횟수 초기화
+            document.getElementById('attemptCount').textContent = 시도횟수;
+            
+            // 기존 입력 필드 초기화
+            document.getElementById('gameSection').innerHTML = `
+                <input class="input" maxlength="1">
+                <input class="input" maxlength="1">
+                <input class="input" maxlength="1">
+                <input class="input" maxlength="1">
+                <input class="input" maxlength="1">
+                <input class="input" maxlength="1">`;
+
+            setInputFilter();
+            setAutoTab();
+
+            // 제한 시간 리셋
+            document.getElementById('remainingTime').textContent = 제한시간;
+            startTimeLimitTimer();
+        }
+
+        function 완료() {
+            document.body.innerHTML = `
+                <h1>게임 완료</h1>
+                <p>모든 단계를 성공했습니다!</p>
+                <button onclick="resetGame()">다시 시작</button>`;
+            
+            clearInterval(제한시간타이머);
+        }
+
         document.addEventListener('keydown', function(event) {
             if (event.key === 'Enter') {
-                event.preventDefault(); // 엔터 키 기본 동작 차단
+                event.preventDefault();
                 제출하기();
-
-                // 첫 번째 입력 칸에 포커스를 맞춤
                 var inputs = document.querySelectorAll('.input');
                 if (inputs.length > 0) {
-                    inputs[0].focus();  // 새로 생성된 줄의 첫 번째 칸에 포커스
+                    inputs[0].focus();
                 }
             }
         });
 
-        // 초기 입력 필터 및 자동탭 설정
         setInputFilter();
         setAutoTab();
     </script>
