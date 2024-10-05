@@ -69,17 +69,17 @@
 
     <!-- 언어 선택 및 모드 선택 화면 -->
     <div id="startScreen">
-        <!-- 언어 선택 버튼 -->
-        <div>
-            <input type="radio" id="englishButton" class="select-btn" value="영어로 플레이"><span>영어</span>
-            <input type="radio" id="koreanButton" class="select-btn" value="한글로 플레이"><span>한글(공사중)</span>
-        </div>
+    <!-- 언어 선택 버튼 -->
+    <div>
+        <input type="radio" id="englishButton" name="언어" class="select-btn" value="영어로 플레이"><span>영어</span>
+        <input type="radio" id="koreanButton" name="언어" class="select-btn" value="한글로 플레이"><span>한글(공사중)</span>
+    </div>
 
-        <!-- 모드 선택 버튼 -->
-        <div>
-            <input type="radio" id="normalModeButton" class="select-btn" value="일반 모드"><span>일반 모드</span>
-            <input type="radio" id="challengeButton" class="select-btn" value="챌린지 모드"><span>챌린지 모드</span>
-        </div>
+    <!-- 모드 선택 버튼 -->
+    <div>
+        <input type="radio" id="normalModeButton" name="모드" class="select-btn" value="일반 모드"><span>일반 모드</span>
+        <input type="radio" id="challengeButton" name="모드" class="select-btn" value="챌린지 모드"><span>챌린지 모드</span>
+    </div>
 
         <!-- 게임 시작 버튼 -->
         <div>
@@ -89,7 +89,7 @@
 
     <!-- 게임 정보 섹션 -->
     <nav id="gameInfo" class="hidden">
-        <div>현재 단계: <span id="currentStage">1</span> / 6</div>
+        <div>현재 단계: <span id="currentStage">1</span>
         <div id="timer">플레이 시간: <span id="time">00:00</span></div>
         <div id="timeLimit" class="hidden">
             남은 시간:
@@ -157,11 +157,11 @@
             var progressBar = document.getElementById('progressBar');
             progressBar.max = 제한시간;
             progressBar.value = 제한시간;
-
+        
             제한시간타이머 = setInterval(function () {
                 남은시간--;
                 progressBar.value = 남은시간;
-
+        
                 if (남은시간 <= 0) {
                     clearInterval(제한시간타이머);
                     alert("시간 초과! 게임이 종료됩니다.");
@@ -197,18 +197,28 @@
             }
 
             if (맞춘갯수 === 6) {
-                alert(`성공! ${시도횟수}번 만에 맞췄습니다.`);
-                if (!챌린지모드 && 단계 < 최대단계) {
+                //alert(`성공! ${시도횟수}번 만에 맞췄습니다.`);
+                
+                if (챌린지모드) {
+                    // 챌린지 모드에서는 단계를 넘기며 계속 진행할 수 있음
+                    단계++;
+                    //alert(`챌린지 모드에서는 ${단계}단계로 넘어갑니다!`);
+                    다음단계();
+                } else if (단계 < 최대단계) {
+                    // 일반 모드에서는 다음 단계로 진행
                     단계++;
                     다음단계();
                 } else {
+                    // 모든 단계를 완료했을 때 게임 종료
                     완료();
                 }
+            
                 return;
-            }
+            }            
 
             var template = `
             <div style="margin-top: 5px;">
+                <br>
                 <input class="input" maxlength="1">
                 <input class="input" maxlength="1">
                 <input class="input" maxlength="1">
@@ -262,8 +272,6 @@
     });
 }
 
-
-
         function 시작타이머() {
             if (!타이머작동중) {
                 타이머작동중 = true;
@@ -283,24 +291,14 @@
         }
 
         function 다음단계() {
-            clearInterval(제한시간타이머);
-
-            새단어();
-
-            var currentInfo = 단계정보[단계 - 1];
-            제한시간 = currentInfo.시간;
-            최대시도 = currentInfo.시도횟수;
-
-            document.getElementById('currentStage').textContent = 단계;
-            if (!챌린지모드) {
-                document.getElementById('progressBar').max = 제한시간;
-                document.getElementById('progressBar').value = 제한시간;
-                document.getElementById('maxAttempts').textContent = 최대시도 === Infinity ? '무제한' : 최대시도;
-            }
-            시도횟수 = 0;
-            document.getElementById('attemptCount').textContent = 시도횟수;
-
-            document.getElementById('gameSection').innerHTML = `
+            if (단계 <= 최대단계 || 챌린지모드) {
+                시도횟수 = 0;
+                document.getElementById('attemptCount').textContent = 시도횟수;
+                document.getElementById('currentStage').textContent = 단계;
+                새단어();
+        
+                var gameSection = document.getElementById('gameSection');
+                gameSection.innerHTML = `
                 <br>
                 <input class="input" maxlength="1">
                 <input class="input" maxlength="1">
@@ -308,13 +306,20 @@
                 <input class="input" maxlength="1">
                 <input class="input" maxlength="1">
                 <input class="input" maxlength="1">`;
-
-            setInputFilter();
-            setAutoTab();
-
-            if (!챌린지모드) startTimeLimitTimer();
+        
+                setInputFilter();
+                setAutoTab();
+        
+                if (챌린지모드 && 단계 > 6) {
+                    //alert("챌린지 모드에서 6단계를 초과합니다. 계속해서 도전할 수 있습니다!");
+                }
+        
+            } else {
+                alert("모든 단계를 완료했습니다!");
+                resetGame();
+            }
         }
-
+        
         function 완료() {
             alert("게임 완료! 모든 단계를 성공했습니다!");
             resetGame();
@@ -323,12 +328,12 @@
         // 언어 선택 버튼
         document.getElementById('englishButton').addEventListener('click', function () {
             현재단어목록 = 단어목록.english;
-            alert('영어 모드를 선택했습니다.');
+            //alert('영어 모드를 선택했습니다.');
         });
 
         document.getElementById('koreanButton').addEventListener('click', function () {
             현재단어목록 = 단어목록.korean;
-            alert('한글 모드를 선택했습니다.');
+            //alert('한글 모드를 선택했습니다.');
         });
 
         // 모드 선택 버튼
@@ -340,20 +345,37 @@
         document.getElementById('challengeButton').addEventListener('click', function () {
             챌린지모드 = true;
             제한시간 = 30;
-            최대시도 = 4;
+            최대시도 = 6;
             document.getElementById('timeLimit').classList.remove('hidden');
             document.getElementById('progressBar').max = 제한시간;
             document.getElementById('progressBar').value = 제한시간;
             document.getElementById('maxAttempts').textContent = 최대시도;
         });
 
-        // 게임 시작 버튼
         document.getElementById('startButton').addEventListener('click', function () {
-            // 시작 화면을 숨기고 게임 화면을 표시
+            var 언어선택 = document.querySelector('input[name="언어"]:checked');
+            var 모드선택 = document.querySelector('input[name="모드"]:checked');
+        
+            if (!언어선택 || !모드선택) {
+                alert("언어와 모드를 선택해주세요!");
+                return;
+            }
+        
+            현재언어 = 언어선택.value === '영어로 플레이' ? 'english' : 'korean';
+            현재단어목록 = 단어목록[현재언어];
+            챌린지모드 = 모드선택.value === '챌린지 모드';
+        
+            최대시도 = 챌린지모드 ? 3 : Infinity;
+            제한시간 = 챌린지모드 ? 180 : Infinity;
+        
             document.getElementById('startScreen').classList.add('hidden');
             document.getElementById('gameInfo').classList.remove('hidden');
             document.getElementById('gameSection').classList.remove('hidden');
+        
+            document.getElementById('timeLimit').classList.toggle('hidden', !챌린지모드);
             새단어();
+            setInputFilter();
+            setAutoTab();
         });
 
         document.addEventListener('keydown', function (event) {
