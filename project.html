@@ -1,6 +1,5 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -13,32 +12,18 @@
             font-size: 35px;
             border-radius: .375rem;
             text-align: center;
-            margin: 0.3px;
+            margin: 0.3px; 
         }
-
         body {
             text-align: center;
         }
-
         nav {
             margin-top: 1px;
             font-size: 18px;
         }
-
-        #timer,
-        #attempts,
-        #stage,
-        #timeLimit {
+        #timer, #attempts, #stage, #timeLimit {
             font-size: 18px;
             margin-top: 10px;
-        }
-
-        progress {
-            width: 100%;
-            /* 프로그레스바의 너비 */
-            height: 20px;
-            /* 프로그레스바의 높이 */
-            background-color: green;
         }
     </style>
 </head>
@@ -49,11 +34,8 @@
     <nav>
         <div>현재 단계: <span id="currentStage">1</span> / 6</div>
         <div id="timer">플레이 시간: <span id="time">00:00</span></div>
-        <div id="timeLimit">
-            남은 시간:
-            <progress id="progressBar" value="100" max="100"></progress>
-        </div>
-        <div id="attempts">시도 횟수: <span id="attemptCount">0</span> / <span id="maxAttempts">무제한</span></div>
+        <div id="timeLimit">남은 시간: <span id="remainingTime">60</span>초</div>
+        <div id="attempts">시도 횟수: <span id="attemptCount">0</span></div>
     </nav>
 
     <section id="gameSection">
@@ -67,34 +49,16 @@
     </section>
 
     <script>
-        var 단어목록 = ['sensor', 'laptop', 'animal', 'window', 'person', 'school', 'friend', 'family', 'number', 'garden'];
-        var 사용된단어 = [];
+        var 단어목록 = ['sensor', 'laptop', 'animal', 'window', 'person', 'school', 'friend', 'family', 'number', 'garden'];  
         var 단계 = 1;
         var 최대단계 = 6;
-        var 답;
+        var 답 = 단어목록[Math.floor(Math.random() * 단어목록.length)];
+        console.log(답);
+
         var 시도횟수 = 0;
-        var 최대시도 = Infinity;  // 첫 단계에서는 무제한
-        var 제한시간 = 180;  // 첫 단계는 3분(180초)
         var 타이머작동중 = false;
-        var 시작시간;
+        var 시작시간, 제한시간 = 60;  // 1단계에서 60초 제한
         var 제한시간타이머;
-
-        // 각 단계별 제한 시간과 시도 횟수 설정
-        var 단계정보 = [
-            {시간: 180, 시도횟수: Infinity}, // 1단계
-            {시간: 150, 시도횟수: 15},      // 2단계
-            {시간: 120, 시도횟수: 13},      // 3단계
-            {시간: 90, 시도횟수: 11},      // 4단계
-            {시간: 60, 시도횟수: 8},       // 5단계
-            {시간: 30, 시도횟수: 6}        // 6단계
-        ];
-
-        function 새단어() {
-            var 후보단어목록 = 단어목록.filter(word => !사용된단어.includes(word));
-            답 = 후보단어목록[Math.floor(Math.random() * 후보단어목록.length)];
-            사용된단어.push(답);
-            console.log(답);
-        }
 
         function updateTimer() {
             var 현재시간 = new Date();
@@ -106,13 +70,11 @@
 
         function startTimeLimitTimer() {
             var 남은시간 = 제한시간;
-            var progressBar = document.getElementById('progressBar');
-            progressBar.max = 제한시간;  // 최대값을 제한시간으로 설정
-            progressBar.value = 제한시간;  // 초기값은 제한시간으로 설정
-
-            제한시간타이머 = setInterval(function () {
+            document.getElementById('remainingTime').textContent = 남은시간;
+            
+            제한시간타이머 = setInterval(function() {
                 남은시간--;
-                progressBar.value = 남은시간;  // 프로그레스 바 업데이트
+                document.getElementById('remainingTime').textContent = 남은시간;
 
                 if (남은시간 <= 0) {
                     clearInterval(제한시간타이머);
@@ -123,12 +85,6 @@
         }
 
         function 제출하기() {
-            if (시도횟수 >= 최대시도) {
-                alert(`시도 횟수를 초과했습니다!`);
-                resetGame();
-                return;
-            }
-
             시도횟수++;
             document.getElementById('attemptCount').textContent = 시도횟수;
 
@@ -153,6 +109,8 @@
 
                 if (단계 < 최대단계) {
                     단계++;
+                    제한시간 -= 10;  // 다음 단계로 넘어갈 때마다 10초씩 감소
+                    document.getElementById('currentStage').textContent = 단계;
                     다음단계();
                 } else {
                     완료();
@@ -176,8 +134,8 @@
 
         function setInputFilter() {
             var inputs = document.querySelectorAll('.input');
-            inputs.forEach(function (input) {
-                input.addEventListener('input', function () {
+            inputs.forEach(function(input) {
+                input.addEventListener('input', function() {
                     this.value = this.value.replace(/[^a-zA-Z]/g, '').toLowerCase();
                 });
             });
@@ -185,8 +143,8 @@
 
         function setAutoTab() {
             var inputs = document.querySelectorAll('.input');
-            inputs.forEach(function (input, index) {
-                input.addEventListener('input', function () {
+            inputs.forEach(function(input, index) {
+                input.addEventListener('input', function() {
                     if (!타이머작동중 && this.value !== '') {
                         시작타이머();  // 첫 입력 시 스톱워치 시작
                         startTimeLimitTimer();  // 제한 시간 타이머 시작
@@ -195,7 +153,7 @@
                         inputs[index + 1].focus();
                     }
                 });
-                input.addEventListener('keydown', function (event) {
+                input.addEventListener('keydown', function(event) {
                     if (event.key === 'Backspace' && input.value === '' && index > 0) {
                         inputs[index - 1].focus();
                     }
@@ -219,21 +177,12 @@
             clearInterval(제한시간타이머);  // 이전 단계의 제한 시간 타이머 종료
 
             // 새로운 단어로 설정
-            새단어();
-
-            // 단계 설정
-            var currentInfo = 단계정보[단계 - 1];
-            제한시간 = currentInfo.시간;
-            최대시도 = currentInfo.시도횟수;
-
-            // 단계와 제한시간, 시도 횟수 업데이트
-            document.getElementById('currentStage').textContent = 단계;
-            document.getElementById('progressBar').max = 제한시간;  // 제한시간을 프로그레스바에 반영
-            document.getElementById('progressBar').value = 제한시간;  // 프로그레스 바 초기화
-            document.getElementById('maxAttempts').textContent = 최대시도 === Infinity ? '무제한' : 최대시도;
-            시도횟수 = 0;
+            답 = 단어목록[Math.floor(Math.random() * 단어목록.length)];
+            console.log(`새로운 단어: ${답}`);
+            
+            시도횟수 = 0;  // 시도 횟수 초기화
             document.getElementById('attemptCount').textContent = 시도횟수;
-
+            
             // 기존 입력 필드 초기화
             document.getElementById('gameSection').innerHTML = `
                 <br>
@@ -247,20 +196,21 @@
             setInputFilter();
             setAutoTab();
 
+            // 제한 시간 리셋
+            document.getElementById('remainingTime').textContent = 제한시간;
             startTimeLimitTimer();
         }
-
 
         function 완료() {
             document.body.innerHTML = `
                 <h1>게임 완료</h1>
                 <p>모든 단계를 성공했습니다!</p>
                 <button onclick="resetGame()">다시 시작</button>`;
-
+            
             clearInterval(제한시간타이머);
         }
 
-        document.addEventListener('keydown', function (event) {
+        document.addEventListener('keydown', function(event) {
             if (event.key === 'Enter') {
                 event.preventDefault();
                 제출하기();
@@ -271,10 +221,8 @@
             }
         });
 
-        새단어();  // 게임 시작 시 단어 설정
         setInputFilter();
         setAutoTab();
     </script>
 </body>
-
 </html>
