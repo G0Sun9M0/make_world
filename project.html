@@ -34,7 +34,7 @@
         }
 
         progress {
-            width: 70%;
+            width: 7;
             /* 프로그레스바의 너비 */
             height: 20px;
             /* 프로그레스바의 높이 */
@@ -48,17 +48,15 @@
         /* 언어 및 모드 선택 버튼 스타일 */
         .select-btn {
             padding: 10px 20px;
-            font-size: 18px;
+            font-size: 1.3em;
             margin: 10px;
             cursor: pointer;
         }
 
         /* 게임 시작 버튼 스타일 */
         .start-btn {
-            padding: 10px 20px;
-            font-size: 20px;
-            margin-top: 20px;
-            cursor: pointer;
+            font-size:1.1em; padding:5px 20px;
+            
         }
     </style>
 </head>
@@ -74,7 +72,7 @@
         <!-- 언어 선택 버튼 -->
         <div>
             <input type="radio" id="englishButton" class="select-btn" value="영어로 플레이"><span>영어</span>
-            <input type="radio" id="koreanButton" class="select-btn" value="한글로 플레이"><span>한글</span>
+            <input type="radio" id="koreanButton" class="select-btn" value="한글로 플레이"><span>한글(공사중)</span>
         </div>
 
         <!-- 모드 선택 버튼 -->
@@ -85,7 +83,7 @@
 
         <!-- 게임 시작 버튼 -->
         <div>
-            <input type="button" id="startButton" class="start-btn" value="게임 시작">
+            <button id="startButton" class="start-btn" value="게임 시작">게임시작</button>
         </div>
     </div>
 
@@ -111,22 +109,23 @@
     </section>
 
     <script>
-        var 단어목록 = {
-            english: ['sensor', 'laptop', 'animal', 'window', 'person', 'school', 'friend', 'family', 'number', 'garden'],
-            korean: ['센서', '노트북', '동물', '창문', '사람', '학교', '친구', '가족', '숫자', '정원']
-        };
-        var 현재단어목록 = 단어목록.english;
-        var 사용된단어 = [];
-        var 단계 = 1;
-        var 최대단계 = 6;
-        var 답;
-        var 시도횟수 = 0;
-        var 최대시도 = Infinity;
-        var 제한시간 = 180;
-        var 타이머작동중 = false;
-        var 시작시간;
-        var 제한시간타이머;
-        var 챌린지모드 = false;
+    var 단어목록 = {
+        english: ['sensor', 'laptop', 'animal', 'window', 'person', 'school', 'friend', 'family', 'number', 'garden'],
+        korean: ['센서', '노트북', '동물', '창문', '사람', '학교', '친구', '가족', '숫자', '정원']
+    };
+    var 현재단어목록 = 단어목록.english;
+    var 사용된단어 = [];
+    var 단계 = 1;
+    var 최대단계 = 6;
+    var 답;
+    var 시도횟수 = 0;
+    var 최대시도 = Infinity;
+    var 제한시간 = 180;
+    var 타이머작동중 = false;
+    var 시작시간;
+    var 제한시간타이머;
+    var 챌린지모드 = false;
+    var 현재언어 = 'english';
 
         // 각 단계별 제한 시간과 시도 횟수 설정
         var 단계정보 = [
@@ -202,7 +201,7 @@
                 if (!챌린지모드 && 단계 < 최대단계) {
                     단계++;
                     다음단계();
-                } else if (챌린지모드) {
+                } else {
                     완료();
                 }
                 return;
@@ -232,15 +231,38 @@
         }
 
         function setAutoTab() {
-            var inputs = document.querySelectorAll('.input');
-            inputs.forEach(function (input, index) {
-                input.addEventListener('input', function () {
-                    if (this.value.length === 1 && index < inputs.length - 1) {
-                        inputs[index + 1].focus();
-                    }
-                });
-            });
-        }
+    var inputs = document.querySelectorAll('.input');
+    inputs.forEach(function (input, index) {
+        // keydown 이벤트 리스너 추가
+        input.addEventListener('keydown', function (event) {
+            // Backspace 키 처리
+            if (event.key === 'Backspace') {
+                if (this.value === '' && index > 0) {
+                    inputs[index - 1].focus();  // 이전 입력 필드로 이동
+                    inputs[index - 1].value = '';  // 이전 입력 필드의 값 삭제
+                }
+            }
+        });
+
+        // input 이벤트 리스너 추가 (첫 입력 시 타이머 시작 및 자동 탭 기능)
+        input.addEventListener('input', function () {
+            this.value = this.value.replace(/[^a-zA-Zㄱ-ㅎㅏ-ㅣ가-힣]/g, '');  // 유효한 문자인지 필터링
+
+            // 첫 번째 입력 시 타이머 시작
+            if (index === 0 && !타이머작동중) {
+                시작타이머();  // 일반 타이머 시작
+                if (!챌린지모드) startTimeLimitTimer();  // 챌린지 모드가 아닐 때 제한 시간 타이머 시작
+            }
+
+            // 한 글자를 입력한 후, 다음 입력 필드로 이동
+            if (this.value.length === 1 && index < inputs.length - 1) {
+                inputs[index + 1].focus();
+            }
+        });
+    });
+}
+
+
 
         function 시작타이머() {
             if (!타이머작동중) {
@@ -350,5 +372,4 @@
         setAutoTab();
     </script>
 </body>
-
 </html>
