@@ -291,34 +291,51 @@
         }
 
         function 다음단계() {
-            if (단계 <= 최대단계 || 챌린지모드) {
-                시도횟수 = 0;
-                document.getElementById('attemptCount').textContent = 시도횟수;
-                document.getElementById('currentStage').textContent = 단계;
-                새단어();
+    clearInterval(제한시간타이머);
+    
+    if (단계 <= 최대단계 || 챌린지모드) {
+        시도횟수 = 0;
+
+        // 각 단계의 정보에서 제한 시간과 최대 시도 횟수를 가져옴
+        var currentInfo = 단계정보[단계 - 1];
+        제한시간 = currentInfo.시간;  // 단계에 맞는 제한 시간 설정
+        최대시도 = currentInfo.시도횟수;  // 단계에 맞는 시도 횟수 설정
+
+        // UI에 현재 시도 횟수 및 최대 시도 횟수 반영
+        document.getElementById('attemptCount').textContent = 시도횟수;
+        document.getElementById('maxAttempts').textContent = 최대시도;
+        document.getElementById('currentStage').textContent = 단계;
+
+        새단어();
         
-                var gameSection = document.getElementById('gameSection');
-                gameSection.innerHTML = `
-                <br>
-                <input class="input" maxlength="1">
-                <input class="input" maxlength="1">
-                <input class="input" maxlength="1">
-                <input class="input" maxlength="1">
-                <input class="input" maxlength="1">
-                <input class="input" maxlength="1">`;
-        
-                setInputFilter();
-                setAutoTab();
-        
-                if (챌린지모드 && 단계 > 6) {
-                    //alert("챌린지 모드에서 6단계를 초과합니다. 계속해서 도전할 수 있습니다!");
-                }
-        
-            } else {
-                alert("모든 단계를 완료했습니다!");
-                resetGame();
-            }
+        // 입력 필드 초기화
+        var gameSection = document.getElementById('gameSection');
+        gameSection.innerHTML = 
+        `<br>
+        <input class="input" maxlength="1">
+        <input class="input" maxlength="1">
+        <input class="input" maxlength="1">
+        <input class="input" maxlength="1">
+        <input class="input" maxlength="1">
+        <input class="input" maxlength="1">`;
+
+        setInputFilter();
+        setAutoTab();
+
+        if (!챌린지모드) {
+            // 챌린지 모드가 아니면, 시간 제한 타이머를 숨김
+            document.getElementById('timeLimit').classList.add('hidden');
+        } else {
+            // 챌린지 모드일 경우 시간 제한 타이머를 표시하고 동작시킴
+            document.getElementById('timeLimit').classList.remove('hidden');
+            startTimeLimitTimer();
         }
+    } else {
+        alert("모든 단계를 완료했습니다!");
+        resetGame();
+    }
+}
+
         
         function 완료() {
             alert("게임 완료! 모든 단계를 성공했습니다!");
@@ -351,11 +368,13 @@
             document.getElementById('progressBar').value = 제한시간;
             document.getElementById('maxAttempts').textContent = 최대시도;
         });
-
+//게임시작버튼
         document.getElementById('startButton').addEventListener('click', function () {
+            //언어선택
             var 언어선택 = document.querySelector('input[name="언어"]:checked');
+            //모드선택
             var 모드선택 = document.querySelector('input[name="모드"]:checked');
-        
+            
             if (!언어선택 || !모드선택) {
                 alert("언어와 모드를 선택해주세요!");
                 return;
@@ -367,7 +386,7 @@
         
             최대시도 = 챌린지모드 ? 3 : Infinity;
             제한시간 = 챌린지모드 ? 180 : Infinity;
-        
+            //게임시작시 메뉴 숨기기
             document.getElementById('startScreen').classList.add('hidden');
             document.getElementById('gameInfo').classList.remove('hidden');
             document.getElementById('gameSection').classList.remove('hidden');
