@@ -78,7 +78,7 @@
     <!-- 모드 선택 버튼 -->
     <div>
         <input type="radio" id="normalModeButton" name="모드" class="select-btn" value="일반 모드"><span>일반 모드</span>
-        <input type="radio" id="challengeButton" name="모드" class="select-btn" value="챌린지 모드"><span>챌린지 모드</span>
+        <input type="radio" id="challengeButton" name="모드" class="select-btn" value="챌린지 모드"><span>챌린지 모드(공사중)</span>
     </div>
 
         <!-- 게임 시작 버튼 -->
@@ -235,7 +235,10 @@
             var inputs = document.querySelectorAll('.input');
             inputs.forEach(function (input) {
                 input.addEventListener('input', function () {
-                    this.value = this.value.replace(/[^a-zA-Zㄱ-ㅎㅏ-ㅣ가-힣]/g, '');
+            if (현재언어 === 'english'){
+            this.value = this.value.replace(/[^a-zA-Z]/g, '');} 
+            if (현재언어 === 'korean'){
+            this.value = this.value.replace(/[^ㄱ-ㅎㅏ-ㅣ가-힣]/g, '');}
                 });
             });
         }
@@ -328,6 +331,7 @@
         } else {
             // 챌린지 모드일 경우 시간 제한 타이머를 표시하고 동작시킴
             document.getElementById('timeLimit').classList.remove('hidden');
+            최대단계=Infinity;
             startTimeLimitTimer();
         }
     } else {
