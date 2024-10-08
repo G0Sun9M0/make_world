@@ -315,6 +315,11 @@
             input.addEventListener('input', function () {
                 this.value = this.value.replace(/[^a-zA-Zㄱ-ㅎㅏ-ㅣ가-힣]/g, '');
 
+                if (현재언어 === 'english'){
+                    this.value = this.value.replace(/[^a-zA-Z]/g, '');} 
+                if (현재언어 === 'korean'){
+                    this.value = this.value.replace(/[^ㄱ-ㅎㅏ-ㅣ가-힣]/g, '');}
+
                 // 첫 번째 입력 시 타이머 시작
                 if (index === 0 && !타이머작동중) {
                     시작타이머();  // 일반 타이머 시작
