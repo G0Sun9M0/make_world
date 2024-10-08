@@ -110,7 +110,11 @@
 
     <script>
         var 단어목록 = {
-            english: ['sensor', 'laptop', 'animal', 'window', 'person', 'school', 'friend', 'family', 'number', 'garden'],
+            english: ['bottle', 'camera', 'castle', 'circle', 'cotton', 'danger', 'desert', 'effort', 'engine', 'fabric',
+            'forest', 'garage', 'handle', 'honest', 'island', 'jungle', 'kettle', 'ladder', 'lemony', 'market',
+            'moment', 'nature', 'office', 'orange', 'palace', 'pencil', 'planet', 'pocket', 'rabbit', 'rescue',
+            'rocket', 'secret', 'shadow', 'silver', 'spider', 'stable', 'temple', 'tunnel', 'vacuum', 'velvet',
+            'window', 'wonder', 'yellow', 'danger', 'guitar', 'tissue', 'volume', 'weapon', 'winter', 'driver'],
             korean: ['센서', '노트북', '동물', '창문', '사람', '학교', '친구', '가족', '숫자', '정원']
         };
         var 현재단어목록 = 단어목록.english;
@@ -118,7 +122,7 @@
         var 단계 = 1;
         var 최대단계 = 6;
         var 답;
-        var 시도횟수 = 0;
+        var 시도횟수 = 1;
         var 최대시도 = Infinity;
         var 제한시간 = 180;
         var 타이머작동중 = false;
@@ -208,8 +212,27 @@
         }
 
         function 제출하기() {
+            var input = document.querySelectorAll('.input');
+            var 빈칸 = false;
+            var 빈칸인덱스 = -1;
+
+            // 입력칸이 비어있는지 확인
+            input.forEach(function (inputField, index) {
+                if (inputField.value === '') {
+                    빈칸 = true;
+                    빈칸인덱스 = index;
+                }
+            });
+
+            // 만약 비어있는 칸이 있으면 알림 출력 및 해당 칸으로 이동
+            if (빈칸) {
+                alert("입력이 안되었습니다");
+                input[빈칸인덱스].focus();  // 빈칸으로 커서 이동
+                return;  // 제출 중단
+            }
+
             // 일반 모드에서 최대 시도 횟수를 체크
-            if (!챌린지모드 && 시도횟수 >= 최대시도) {
+            if (시도횟수 >= 최대시도) {
                 alert(`시도 횟수를 초과했습니다!`);
                 resetGame();
                 return;
@@ -241,13 +264,13 @@
                 if (챌린지모드) {
                     단계++;
                     다음단계();  // 챌린지 모드에서는 무한으로 계속 다음 단계로 진행
+                } else if (단계 < 최대단계) {
+                    // 일반 모드에서는 다음 단계로 진행
+                    단계++;
+                    다음단계();
                 } else {
-                    if (단계 < 최대단계) {
-                        단계++;
-                        다음단계();
-                    } else {
-                        완료();  // 마지막 단계 성공 후 완료 처리
-                    }
+                    // 모든 단계를 완료했을 때 게임 종료
+                    완료();
                 }
                 return;
             }
@@ -342,13 +365,14 @@
             var currentInfo = 단계정보[Math.min(단계 - 1, 단계정보.length - 1)];  // 최대 단계정보를 넘어서면 마지막 단계정보를 계속 사용
             제한시간 = currentInfo.시간;  // 제한시간 설정
 
-            //if (일반모드 = true){ 
-                //startNormalMode(단계 - 1); 
-            //}
-
             // 시도 횟수 초기화
             시도횟수 = 0;  // 시도 횟수를 0으로 초기화
             document.getElementById('attemptCount').textContent = 시도횟수;  // UI에 반영
+
+            if (!챌린지모드){
+                var currentInfo = 단계정보[단계 - 1];
+                최대시도 = currentInfo.시도횟수;  // 단계에 맞는 시도 횟수 설정
+            }
         
             // 현재 단계 업데이트
             document.getElementById('currentStage').textContent = 단계;
@@ -380,7 +404,7 @@
                 startTimeLimitTimer();  // 새로운 타이머 시작
             }
 
-            if (!챌린지모드 && 시도횟수 >= 최대시도) {
+            if (시도횟수 >= 최대시도) {
                 alert("시도 횟수를 초과했습니다!");  // 게임 종료 알림
                 resetGame();
                 return;
