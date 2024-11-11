@@ -117,12 +117,13 @@
             'window', 'wonder', 'yellow', 'danger', 'guitar', 'tissue', 'volume', 'weapon', 'winter', 'driver'],
             korean: ['센서', '노트북', '동물', '창문', '사람', '학교', '친구', '가족', '숫자', '정원']
         };
+
         var 현재단어목록 = 단어목록.english;
         var 사용된단어 = [];
         var 단계 = 1;
         var 최대단계 = 6;
         var 답;
-        var 시도횟수 = 1;
+        var 시도횟수 = 0;
         var 최대시도 = Infinity;
         var 제한시간 = 180;
         var 타이머작동중 = false;
@@ -224,23 +225,33 @@
             // 만약 비어있는 칸이 있으면 알림 출력 및 해당 칸으로 이동
             if (빈칸) {
                 alert("입력이 안되었습니다");
-                input[index].focus();  // 빈칸으로 커서 이동
+                빈칸인덱스;  // 빈칸으로 커서 이동
                 return;  // 제출 중단
             }
 
-            // 일반 모드에서 최대 시도 횟수를 체크
-            if (시도횟수 >= 최대시도) {
+            // 제출하기 함수 내 시도 횟수 체크 부분 수정
+            if (시도횟수 >= (최대시도-1)) {
                 alert(`시도 횟수를 초과했습니다!`);
                 resetGame();
                 return;
             }
-        
+
+            // 입력 필드 값을 하나의 단어로 결합
+            var userInputWord = Array.from(document.querySelectorAll('.input')).map(input => input.value).join('');
+
+            // 단어 목록에 있는지 확인
+            if (!현재단어목록.includes(userInputWord)) {
+                alert(`단어 목록에 없습니다.`);
+                return;
+            }
+
             // 시도 횟수를 1씩 증가시키도록 수정
             시도횟수++; // 이 부분이 중요합니다. 이 한 줄로 시도 횟수가 1로 카운트됩니다.
             document.getElementById('attemptCount').textContent = 시도횟수;
         
             var input = document.querySelectorAll('.input');
             var 맞춘갯수 = 0;
+
         
             for (let i = 0; i < 6; i++) {
                 if (input[i].value === 답[i]) {
