@@ -239,6 +239,11 @@
             // 단어 목록에 있는지 확인
             if (!현재단어목록.includes(userInputWord)) {
                 alert(`단어 목록에 없습니다.`);
+                var inputs = document.querySelectorAll('.input');
+                if (inputs.length > 0) {
+                    currentIndex = (currentIndex + 1) % inputs.length; // 인덱스를 하나씩 증가시키며, 마지막 인덱스까지 오면 첫 번째로 이동
+                    inputs[currentIndex].focus(); // 저장된 인덱스에 포커스
+                }
                 return;
             }
 
