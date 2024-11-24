@@ -58,6 +58,29 @@
             font-size:1.1em; padding:5px 20px;
             
         }
+/*정답 판별시 뒤집어지면서 판별하는 애니메이션 css*/
+        @keyframes flip {
+    0% {
+        transform: rotateX(0);
+    }
+    25%{
+        transform: rotateX(45deg);
+    }
+    50% {
+        transform: rotateX(90deg);
+    }
+    75%{
+        transform: rotateX(45deg);
+    }
+    100% {
+        transform: rotateX(0);
+    }
+}
+
+.flip {
+    animation: flip 0.6s ease-in-out;
+    transform-origin: bottom;
+}
     </style>
 </head>
 
@@ -207,84 +230,90 @@
         }
 
         function 제출하기() {
-            var input = document.querySelectorAll('.input');
-            var 빈칸 = false;
-            var 빈칸인덱스 = -1;
+    var input = document.querySelectorAll('.input');
+    var 빈칸 = false;
 
-            // 입력칸이 비어있는지 확인
-            input.forEach(function (inputField, index) {
-                if (inputField.value === '') {
-                    빈칸 = true;
-                    빈칸인덱스 = index;
-                }
+    // 입력칸이 비어있는지 확인
+    input.forEach(function (inputField) {
+        if (inputField.value === '') {
+            빈칸 = true;
+        }
+    });
+
+    if (빈칸) {
+        alert("입력이 안되었습니다.");
+        return;
+    }
+
+    // 입력 필드 값을 하나의 단어로 결합
+    var userInputWord = Array.from(input).map(input => input.value).join('');
+
+    if (!현재단어목록.includes(userInputWord)) {
+        alert(`단어 목록에 없습니다.`);
+        return;
+    }
+
+    시도횟수++;
+    document.getElementById('attemptCount').textContent = 시도횟수;
+
+    var 맞춘갯수 = 0;
+
+    input.forEach((inputField, index) => {
+        // 각 입력 필드의 애니메이션 실행을 지연시킴
+        setTimeout(() => {
+            if (inputField.value === 답[index]) {
+                inputField.style.background = '#22c55e';
+                맞춘갯수++;
+            } else if (답.includes(inputField.value)) {
+                inputField.style.background = '#eab308';
+            } else {
+                inputField.style.background = '#6b7280';
+                inputField.style.color = '#ffffff';
+            }
+
+            // 애니메이션 추가
+            inputField.classList.add('flip');
+            inputField.addEventListener('animationend', () => {
+                inputField.classList.remove('flip');
             });
 
-            // 만약 비어있는 칸이 있으면 알림 출력 및 해당 칸으로 이동
-            if (빈칸) {
-                alert("입력이 안되었습니다");
-                빈칸인덱스;  // 빈칸으로 커서 이동
-                return;  // 제출 중단
-            }
+            inputField.classList.remove('input');
 
-            // 제출하기 함수 내 시도 횟수 체크 부분 수정
-            if (시도횟수 >= (최대시도-1)) {
-                alert(`시도 횟수를 초과했습니다!`);
-                resetGame();
-                return;
-            }
+            // 정답 여부를 판단 후 알림 표시
+            if (index === input.length - 1 && 맞춘갯수 === 6) {
+                const gameSection = document.getElementById('gameSection');
+                const alertDiv = document.createElement('div');
+                alertDiv.style.marginTop = '20px';
+                alertDiv.style.fontSize = '20px';
+                alertDiv.style.color = '#22c55e';
+                alertDiv.textContent = '정답입니다!';
+                gameSection.appendChild(alertDiv);
 
-            // 입력 필드 값을 하나의 단어로 결합
-            var userInputWord = Array.from(document.querySelectorAll('.input')).map(input => input.value).join('');
+                const nextButton = document.createElement('button');
+                nextButton.textContent = '다음 단계';
+                nextButton.style.marginTop = '10px';
+                nextButton.style.padding = '10px 20px';
+                nextButton.style.fontSize = '16px';
+                nextButton.style.backgroundColor = '#22c55e';
+                nextButton.style.color = '#ffffff';
+                nextButton.style.border = 'none';
+                nextButton.style.borderRadius = '5px';
+                nextButton.style.cursor = 'pointer';
 
-            // 단어 목록에 있는지 확인
-            if (!현재단어목록.includes(userInputWord)) {
-                alert(`단어 목록에 없습니다.`);
-                var inputs = document.querySelectorAll('.input');
-                if (inputs.length > 0) {
-                    currentIndex = (currentIndex + 1) % inputs.length; // 인덱스를 하나씩 증가시키며, 마지막 인덱스까지 오면 첫 번째로 이동
-                    inputs[currentIndex].focus(); // 저장된 인덱스에 포커스
-                }
-                return;
-            }
-
-            // 시도 횟수를 1씩 증가시키도록 수정
-            시도횟수++; // 이 부분이 중요합니다. 이 한 줄로 시도 횟수가 1로 카운트됩니다.
-            document.getElementById('attemptCount').textContent = 시도횟수;
-        
-            var input = document.querySelectorAll('.input');
-            var 맞춘갯수 = 0;
-
-        
-            for (let i = 0; i < 6; i++) {
-                if (input[i].value === 답[i]) {
-                    input[i].style.background = '#22c55e';
-                    맞춘갯수++;
-                } else if (답.includes(input[i].value)) {
-                    input[i].style.background = '#eab308';
-                } else {
-                    input[i].style.background = '#6b7280';
-                    input[i].style.color = '#ffffff';
-                }
-                input[i].classList.remove('input');
-            }
-
-            if (맞춘갯수 === 6) {
-                //alert(`성공! ${시도횟수}번 만에 맞췄습니다.`);
-                if (챌린지모드) {
-                    단계++;
-                    다음단계();  // 챌린지 모드에서는 무한으로 계속 다음 단계로 진행
-                } else if (단계 < 최대단계) {
-                    // 일반 모드에서는 다음 단계로 진행
+                nextButton.addEventListener('click', function () {
                     단계++;
                     다음단계();
-                } else {
-                    // 모든 단계를 완료했을 때 게임 종료
-                    완료();
-                }
-                return;
+                    alertDiv.remove();
+                    nextButton.remove();
+                });
+
+                gameSection.appendChild(nextButton);
             }
-        
-            var template = `
+        }, index * 300); // 300ms씩 지연
+    });
+
+    if (맞춘갯수 !== 6) {
+        var template = `
             <div style="margin-top: 5px;">
                 <input class="input" maxlength="1">
                 <input class="input" maxlength="1">
@@ -293,10 +322,13 @@
                 <input class="input" maxlength="1">
                 <input class="input" maxlength="1">
             </div>`;
-            document.querySelector('#gameSection').insertAdjacentHTML('beforeend', template);
-            setInputFilter();
-            setAutoTab();
-        }
+        document.querySelector('#gameSection').insertAdjacentHTML('beforeend', template);
+        setInputFilter();
+        setAutoTab();
+    }
+}
+
+
 
         function setInputFilter() {
             var inputs = document.querySelectorAll('.input');
