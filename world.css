@@ -1,38 +1,69 @@
+/* 공통 요소 */
+body {
+    text-align: center;
+    font-family: 'Arial', sans-serif;
+    background-color: #f9fafb; /* 밝고 부드러운 배경색 */
+    color: #333; /* 텍스트 컬러 */
+    margin: 0;
+    padding: 0;
+}
+
+/* 입력 필드 스타일 */
 input {
     width: 50px;
     height: 50px;
-    border: 1 solid #e5e7eb;
+    border: 2px solid #d1d5db; /* 더 선명한 테두리 */
     font-size: 35px;
-    border-radius: .375rem;
+    border-radius: .5rem; /* 둥근 모서리 추가 */
     text-align: center;
     margin: 0.3px;
+    background-color: #ffffff; /* 흰색 배경 */
+    color: #374151; /* 텍스트 색상 */
+    transition: all 0.3s ease; /* 부드러운 전환 효과 */
 }
 
-body {
-    text-align: center;
+input:focus {
+    border-color: #60a5fa; /* 포커스 시 파란색 테두리 */
+    box-shadow: 0 0 5px #93c5fd; /* 포커스 시 주변 빛나는 효과 */
 }
 
+/* 내비게이션 스타일 */
 nav {
     margin-top: 1px;
     font-size: 18px;
+    color: #4b5563; /* 약간 어두운 색상 */
 }
 
+/* 정보 스타일 */
 #timer,
 #attempts,
 #stage,
 #timeLimit {
     font-size: 18px;
     margin-top: 10px;
+    color: #2564eb60; /* 강조된 파란색 */
+    font-weight: bold;
 }
 
+/* 프로그레스바 스타일 */
 progress {
-    width: 7;
-    /* 프로그레스바의 너비 */
+    width: 200px; /* 프로그레스바 너비 */
     height: 20px;
-    /* 프로그레스바의 높이 */
-    background-color: green;
+    border-radius: 10px; /* 둥근 모서리 */
+    background-color: #e5e7eb; /* 배경 색 */
 }
 
+progress::-webkit-progress-bar {
+    border-radius: 10px;
+    background-color: #f3f4f6; /* 프로그레스바의 기본 배경색 */
+}
+
+progress::-webkit-progress-value {
+    background-color: #34d399; /* 채워진 부분의 색상 (녹색) */
+    border-radius: 10px;
+}
+
+/* 숨겨진 요소 */
 .hidden {
     display: none;
 }
@@ -43,10 +74,32 @@ progress {
     font-size: 1.3em;
     margin: 10px;
     cursor: pointer;
+    background-color: #3b83f68d; /* 파란색 배경 */
+    color: white; /* 흰색 텍스트 */
+    border: none;
+    border-radius: .375rem;
+    box-shadow: 0 1px px rgba(0, 0, 0, 0.1);
+    transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.select-btn:hover {
+    background-color: #2563eb; /* hover 시 더 진한 파란색 */
+    transform: translateY(-2px); /* 살짝 올라감 */
 }
 
 /* 게임 시작 버튼 스타일 */
 .start-btn {
-    font-size:1.1em; padding:5px 20px;
-    
+    font-size: 1.1em;
+    padding: 5px 20px;
+    background-color: #22c55e; /* 초록색 배경 */
+    color: white; /* 흰색 텍스트 */
+    border: none;
+    border-radius: .375rem;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.start-btn:hover {
+    background-color: #16a34a; /* hover 시 더 진한 초록색 */
+    transform: translateY(-2px);
 }
