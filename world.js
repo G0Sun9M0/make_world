@@ -196,17 +196,14 @@ function setInputFilter() {
         });
     });
 }
-
-// 기존 setAutoTab() 함수 내에서, 타이머를 시작하는 부분 수정
 function setAutoTab() {
     var inputs = document.querySelectorAll('.input');
     inputs.forEach(function (input, index) {
     input.addEventListener('keydown', function (event) {
-        // Backspace 키 처리
         if (event.key === 'Backspace') {
-            if (this.value === '' && index > 0) {
-                inputs[index - 1].focus();  // 이전 입력 필드로 이동
-                inputs[index - 1].value = '';  // 이전 입력 필드의 값 삭제
+            if (index > 0) {
+                inputs[index-1].focus();  // 이전 입력 필드로 이동
+                inputs[index-1].value = '';  // 이전 입력 필드의 값 삭제
             }
         }
     });
@@ -225,112 +222,106 @@ function setAutoTab() {
         if (현재단어목록 === 단어목록.korean) {
                 if (input.value === 'q'){
                     inputs[index].value = 'ㅂ';
-                    inputs[index + 1].focus();
-                } else if (input.value === 'Q'){
+                } else if (input.value === 'Q') {
                     inputs[index].value = 'ㅂ';
                     inputs[index+1].value = 'ㅂ';
-                    inputs[index + 2].focus();
+                    setTimeout(() => {
+                        inputs[index + 2].focus();
+                    }, 0);
                 } else if (input.value === 'w'){
                     inputs[index].value = 'ㅈ';
-                    inputs[index + 1].focus();
-                } else if (input.value === 'W'){
+                } else if (input.value === 'W') {
                     inputs[index].value = 'ㅈ';
                     inputs[index+1].value = 'ㅈ';
-                    inputs[index + 2].focus();
+                    setTimeout(() => {
+                        inputs[index + 2].focus();
+                    }, 0);
                 } else if (input.value === 'e') {
-                    inputs[index].value = 'ㄷ';
-                    inputs[index + 1].focus();
+                    inputs[index].value = 'ㄷ';;
                 } else if (input.value === 'E') {
                     inputs[index].value = 'ㄷ';
-                    inputs[index + 1].value = 'ㄷ';
-                    inputs[index + 2].focus();
+                    inputs[index+1].value = 'ㄷ';
+                    setTimeout(() => {
+                        inputs[index + 2].focus();
+                    }, 0);
                 } else if (input.value === 'r') {
                     inputs[index].value = 'ㄱ';
-                    inputs[index + 1].focus();
                 } else if (input.value === 'R') {
                     inputs[index].value = 'ㄱ';
-                    inputs[index + 1].value = 'ㄱ';
-                    inputs[index + 2].focus();
+                    inputs[index+1].value = 'ㄱ';
+                    setTimeout(() => {
+                        inputs[index + 2].focus();
+                    }, 0);
                 } else if (input.value === 't') {
                     inputs[index].value = 'ㅅ';
-                    inputs[index + 1].focus();
                 } else if (input.value === 'T') {
                     inputs[index].value = 'ㅅ';
-                    inputs[index + 1].value = 'ㅅ';
-                    inputs[index + 2].focus();
+                    inputs[index+1].value = 'ㅅ';
+                    setTimeout(() => {
+                        inputs[index + 2].focus();
+                    }, 0); 
                 } else if (input.value === 'y'|| input.value === 'Y') {
                     inputs[index].value = 'ㅛ';
-                    inputs[index + 1].focus();
                 } else if (input.value === 'u'|| input.value === 'U') {
                     inputs[index].value = 'ㅕ';
-                    inputs[index + 1].focus();
                 } else if (input.value === 'i' || input.value === 'I') {
                     inputs[index].value = 'ㅑ';
-                    inputs[index + 1].focus();
                 } else if (input.value === 'o') {
                     inputs[index].value = 'ㅏ';
                     inputs[index + 1].value = 'ㅣ';
-                    inputs[index + 2].focus();
+                    setTimeout(() => {
+                        inputs[index + 2].focus();
+                    }, 0);
                 } else if (input.value === 'O') {
                     inputs[index].value = 'ㅑ';
-                    inputs[index + 1].value = 'ㅣ';
-                    inputs[index + 2].focus();
+                    inputs[index+1].value = 'ㅣ';
+                    setTimeout(() => {
+                        inputs[index + 2].focus();
+                    }, 0);
                 } else if (input.value === 'p') {
                     inputs[index].value = 'ㅓ';
                     inputs[index + 1].value = 'ㅣ';
-                    inputs[index + 2].focus();
+                    setTimeout(() => {
+                        inputs[index + 2].focus();
+                    }, 0);
                 } else if (input.value === 'P') {
                     inputs[index].value = 'ㅕ';
-                    inputs[index + 1].value = 'ㅣ';
-                    inputs[index + 2].focus();
+                    inputs[index+1].value = 'ㅣ';
+                    setTimeout(() => {
+                        inputs[index + 2].focus();
+                    }, 0);
                 } else if (input.value === 'a'|| input.value === 'A') {
                     inputs[index].value = 'ㅁ';
-                    inputs[index + 1].focus();
                 } else if (input.value === 's'|| input.value === 'S') {
                     inputs[index].value = 'ㄴ';
-                    inputs[index + 1].focus();
                 } else if (input.value === 'd'|| input.value === 'D') {
                     inputs[index].value = 'ㅇ';
-                    inputs[index + 1].focus();
                 } else if (input.value === 'f'|| input.value === 'F') {
                     inputs[index].value = 'ㄹ';
-                    inputs[index + 1].focus();
                 } else if (input.value === 'g'|| input.value === 'G') {
                     inputs[index].value = 'ㅎ';
-                    inputs[index + 1].focus();
                 } else if (input.value === 'h'|| input.value === 'H') {
                     inputs[index].value = 'ㅗ';
-                    inputs[index + 1].focus();
                 } else if (input.value === 'j'|| input.value === 'J') {
                     inputs[index].value = 'ㅓ';
-                    inputs[index + 1].focus();
                 } else if (input.value === 'k'|| input.value === 'K') {
                     inputs[index].value = 'ㅏ';
-                    inputs[index + 1].focus();
                 } else if (input.value === 'l'|| input.value === 'L') {
                     inputs[index].value = 'ㅣ';
-                    inputs[index + 1].focus();
                 } else if (input.value === 'z'|| input.value === 'Z') {
                     inputs[index].value = 'ㅋ';
-                    inputs[index + 1].focus();
                 } else if (input.value === 'x'|| input.value === 'X') {
                     inputs[index].value = 'ㅌ';
-                    inputs[index + 1].focus();
                 } else if (input.value === 'c'|| input.value === 'C') {
                     inputs[index].value = 'ㅊ';
-                    inputs[index + 1].focus();
                 } else if (input.value === 'v'|| input.value === 'V') {
                     inputs[index].value = 'ㅍ';
-                    inputs[index + 1].focus();
                 } else if (input.value === 'b'|| input.value === 'B') {
                     inputs[index].value = 'ㅠ';
-                    inputs[index + 1].focus();
                 } else if (input.value === 'n'|| input.value === 'N') {
                     inputs[index].value = 'ㅜ';
-                    inputs[index + 1].focus();
                 } else if (input.value === 'm'|| input.value === 'M') {
                     inputs[index].value = 'ㅡ';
-                    inputs[index + 1].focus();
                 }
             }
         // 자동으로 다음 입력 필드로 이동
