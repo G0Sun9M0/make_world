@@ -103,3 +103,58 @@ progress::-webkit-progress-value {
     background-color: #16a34a; /* hover 시 더 진한 초록색 */
     transform: translateY(-2px);
 }
+
+#startScreen {
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background-color: #f8f9fa; /* 부드러운 배경색 */
+    border: 2px solid #dee2e6; /* 약간의 테두리 */
+    border-radius: 12px;
+    padding: 20px;
+    width: 300px;
+    margin: auto;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1); /* 부드러운 그림자 효과 */
+}
+
+#startScreen label {
+    font-size: 16px;
+    font-weight: bold;
+    color: #495057;
+    margin-bottom: 10px;
+}
+
+#startScreen input[type="radio"] {
+    margin-right: 10px;
+}
+
+#startScreen .options {
+    display: flex;
+    flex-direction: column;
+    gap: 15px; /* 항목 간 간격 */
+}
+
+#startScreen button {
+    background-color: #28a745; /* 버튼 색상: 녹색 */
+    color: white;
+    font-size: 16px;
+    font-weight: bold;
+    border: none;
+    border-radius: 6px;
+    padding: 10px 20px;
+    margin-top: 20px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+#startScreen button:hover {
+    background-color: #218838; /* 호버 시 버튼 색상 */
+}
+
+#startScreen button:active {
+    background-color: #1e7e34; /* 클릭 시 버튼 색상 */
+}
+
+#startScreen input[type="radio"]:checked + label {
+    color: #007bff; /* 선택된 항목의 텍스트 색상 변경 */
+}
