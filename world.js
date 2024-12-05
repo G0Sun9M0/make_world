@@ -195,7 +195,7 @@ function setAutoTab() {
     inputs.forEach(function (input, index) {
     input.addEventListener('keydown', function (event) {
         if (event.key === 'Backspace') {
-            if (index > 0) {
+            if (this.value === '' && index > 0) {
                 inputs[index-1].focus();  // 이전 입력 필드로 이동
                 inputs[index-1].value = '';  // 이전 입력 필드의 값 삭제
             }
