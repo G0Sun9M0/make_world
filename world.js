@@ -41,7 +41,7 @@ function startNormalMode(i) {
 function startChallengeMode() {
     //일반모드 = false;
     챌린지모드 = true; // 모드 설정
-    제한시간 = 30;
+    제한시간 = 120;
     최대시도 = 6;  // 최대 시도 횟수를 6으로 고정
     document.getElementById('timeLimit').classList.remove('hidden');
     document.getElementById('progressBar').max = 제한시간;
@@ -211,6 +211,11 @@ function setAutoTab() {
                 // 챌린지 모드일 때는 별도로 제한시간 타이머도 시작
                 clearInterval(제한시간타이머);  // 이전 타이머 초기화
                 startTimeLimitTimer();  // 제한시간 타이머 시작
+            }
+        }
+        else{
+            if (index === 0 && !타이머작동중) {
+                시작타이머();  // 일반 타이머 시작
             }
         }
         if (현재단어목록 === 단어목록.korean) {
@@ -415,7 +420,7 @@ document.getElementById('normalModeButton').addEventListener('click', function (
 
 document.getElementById('challengeButton').addEventListener('click', function () {
     챌린지모드 = true;
-    제한시간 = 30;
+    제한시간 = 120;
     최대시도 = 6;  // 최대 시도 횟수를 6으로 고정
     document.getElementById('timeLimit').classList.remove('hidden');
     document.getElementById('progressBar').max = 제한시간;
